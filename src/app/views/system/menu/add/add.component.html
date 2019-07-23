@@ -1,0 +1,50 @@
+<nb-card style="width:550px">
+  <nb-card-header>新增菜单</nb-card-header>
+  <nb-card-body>
+    <form aria-labelledby="title">
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="userName">上级菜单</label>
+        <div class="col-sm-9">
+          <nb-select [(ngModel)]="menu.pid" fullWidth id="pid" name="pid" placeholder="上级菜单">
+            <nb-option>---请选择---</nb-option>
+            <nb-option *ngFor="let m of menus" [value]="m.id">{{m.name}}</nb-option>
+          </nb-select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="name">名称</label>
+        <div class="col-sm-9">
+          <input #name="ngModel" [(ngModel)]="menu.name" fullWidth id="name" name="name" nbInput placeholder="名称"
+            type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="path">路由</label>
+        <div class="col-sm-9">
+          <input #path="ngModel" [(ngModel)]="menu.path" fullWidth id="path" name="path" nbInput placeholder="路由"
+            type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="icon">图标</label>
+        <div class="col-sm-9">
+          <input #icon="ngModel" [(ngModel)]="menu.icon" fullWidth id="icon" name="icon" nbInput placeholder="图标"
+            type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="sort">序号</label>
+        <div class="col-sm-9">
+          <input #sort="ngModel" [(ngModel)]="menu.sort" fullWidth id="sort" name="sort" nbInput placeholder="序号"
+            type="number">
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer>
+    <div style="float: right">
+      <button (click)="cancel()" class="cancel" nbButton status="danger">取消</button> &nbsp;
+      <button (click)="submit()" nbButton status="success">提交</button>
+    </div>
+  </nb-card-footer>
+</nb-card>

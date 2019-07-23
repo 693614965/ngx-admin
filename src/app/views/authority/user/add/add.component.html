@@ -1,0 +1,90 @@
+<nb-card style="width:550px">
+  <nb-card-header>新增用户</nb-card-header>
+    <nb-card-body>
+      <form #form="ngForm" aria-labelledby="title">
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="userName">账号</label>
+        <div class="col-sm-9">
+          <input #userName="ngModel" [(ngModel)]="user.userName" fullWidth id="userName" name="userName" nbInput
+            placeholder="账号" [attr.aria-invalid]="userName.invalid && userName.touched ? true : null" [required]="true"
+            [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : ''" autofocus type="text">
+          <ng-container *ngIf="userName.invalid && userName.touched">
+            <p *ngIf="userName.errors?.required" class="caption status-danger">
+              请输入登录账号!
+            </p>
+          </ng-container>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="password">密码</label>
+        <div class="col-sm-9">
+          <input nbInput [(ngModel)]="user.password" #password="ngModel" type="password" id="input-password"
+            name="password" placeholder="密码" fullWidth
+            [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : ''" [required]="true"
+            [minlength]="6" [maxlength]="12" [attr.aria-invalid]="password.invalid && password.touched ? true : null">
+          <ng-container *ngIf="password.invalid && password.touched">
+            <p class="caption status-danger" *ngIf="password.errors?.required">
+              请输入密码
+            </p>
+            <p class="caption status-danger" *ngIf="password.errors?.minlength || password.errors?.maxlength">
+              密码长度为6到12个字符
+            </p>
+          </ng-container>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="confirmPassword">确认密码</label>
+        <div class="col-sm-9">
+          <input nbInput [(ngModel)]="user.confirmPassword" #rePass="ngModel" type="password" id="input-re-password"
+            name="rePass" placeholder="确认密码" fullWidth
+            [status]="rePass.dirty ? (rePass.invalid || password.value != rePass.value  ? 'danger' : 'success') : ''"
+            [required]="true" [attr.aria-invalid]="rePass.invalid && rePass.touched ? true : null">
+          <ng-container *ngIf="rePass.invalid && rePass.touched">
+            <p class="caption status-danger" *ngIf="rePass.errors?.required">
+              请输入确认密码
+            </p>
+            <p class="caption status-danger" *ngIf="password.value != rePass.value && !rePass.errors?.required">
+              两次输入的密码不一致
+            </p>
+          </ng-container>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="email">邮箱</label>
+        <div class="col-sm-9">
+          <input nbInput [(ngModel)]="user.email" #email="ngModel" id="input-email" name="email" pattern=".+@.+..+"
+            placeholder="邮箱" fullWidth [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
+            [required]="false" [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+          <ng-container *ngIf="email.invalid && email.touched">
+            <p class="caption status-danger" *ngIf="email.errors?.required">
+              请输入邮箱
+            </p>
+            <p class="caption status-danger" *ngIf="email.errors?.pattern">
+              请输入正确的邮箱地址
+            </p>
+          </ng-container>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="mobile">手机</label>
+        <div class="col-sm-9">
+          <input #mobile="ngModel" [(ngModel)]="user.mobile" fullWidth id="mobile" name="mobile" nbInput
+            placeholder="手机" type="phone">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="profile">个人介绍</label>
+        <div class="col-sm-9">
+          <textarea #profile="ngModel" [(ngModel)]="user.profile" fullWidth id="profile" name="profile" nbInput
+            placeholder="个人介绍" rows="2" shape="round"></textarea>
+        </div>
+      </div>
+    </form>
+    </nb-card-body>
+    <nb-card-footer>
+      <div style="float: right">
+        <button (click)="cancel()" class="cancel" nbButton status="danger">取消</button> &nbsp;
+        <button (click)="submit()"  [disabled]="submitted || !form.valid" nbButton status="success">提交</button>
+      </div>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,55 @@
+<nb-card>
+  <nb-card-header>
+    <div style='float: left;'>
+      <span>菜单管理</span>
+    </div>
+    <div style='float: right;margin-right: 10px;'>
+      <button (click)="onAddClick()" nbButton size='small' status='primary'>
+        新增
+      </button>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <table [nbTreeGrid]="source" equalColumnsWidth>
+      <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
+      <tr nbTreeGridRow [clickToToggle]="false" *nbTreeGridRowDef="let row; columns: allColumns"></tr>
+
+      <ng-container [nbTreeGridColumnDef]="customColumn">
+        <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>名称</th>
+        <td nbTreeGridCell *nbTreeGridCellDef="let row">
+          <nb-tree-grid-row-toggle [expanded]="row.expanded"
+            *ngIf="row.data.children && row.data.children.length !== 0 ">
+          </nb-tree-grid-row-toggle>
+          {{row.data[customColumn]}}
+        </td>
+      </ng-container>
+
+      <ng-container nbTreeGridColumnDef="path">
+        <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>路由</th>
+        <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.path || '-'}}</td>
+      </ng-container>
+
+      <ng-container nbTreeGridColumnDef="icon">
+        <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>图标</th>
+        <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.icon || '-'}}</td>
+      </ng-container>
+
+      <ng-container nbTreeGridColumnDef="sort">
+        <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>序号</th>
+        <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.sort || '-'}}</td>
+      </ng-container>
+
+      <ng-container nbTreeGridColumnDef="actions">
+        <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>操作</th>
+        <td nbTreeGridCell *nbTreeGridCellDef="let row">
+          <button (click)="onEditClick(row.data)" nbButton size='small' status='primary'>
+            编辑
+          </button>&nbsp;
+          <button (click)="onRemoveClick(row.data)" nbButton size='small' status='danger'>
+            删除
+          </button>&nbsp;
+        </td>
+      </ng-container>
+    </table>
+  </nb-card-body>
+</nb-card>

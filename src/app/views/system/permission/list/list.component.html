@@ -1,0 +1,20 @@
+<nb-card>
+        <nb-card-header>
+          <div style='float: left;'>
+            <span>功能管理</span>
+          </div>
+          <div style='float: right;margin-right: 10px;'>
+            <button (click)="onAddClick()" nbButton size='small' status='primary'>
+              新增
+            </button>
+          </div>
+        </nb-card-header>
+      
+        <nb-card-body>
+          <ng2-smart-table (createConfirm)="onCreateConfirm($event)" (deleteConfirm)="onDeleteConfirm($event)"
+            (editConfirm)="onEditConfirm($event)" [settings]="settings" [source]="source">
+          </ng2-smart-table>
+      
+        </nb-card-body>
+      </nb-card>
+      

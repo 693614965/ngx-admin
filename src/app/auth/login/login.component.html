@@ -1,0 +1,60 @@
+<h1 class="title" id="title">登陆</h1>
+<p class="sub-title"></p>
+
+<nb-alert *ngIf="showMessages && showMessages?.length && !submitted" outline="danger" role="alert">
+  <ul class="alert-message-list">
+    <li class="alert-message">{{ showMessages }}</li>
+  </ul>
+</nb-alert>
+
+<form #form="ngForm" (ngSubmit)="login()" aria-labelledby="title">
+
+  <div class="form-control-group">
+    <label class="label" for="input-userName">账号:</label>
+    <input #userName="ngModel" [(ngModel)]="user.userName"
+           [attr.aria-invalid]="userName.invalid && userName.touched ? true : null"
+           [required]="getConfigValue('forms.validation.userName.required')"
+           [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : ''" autofocus
+           fieldSize="large" fullWidth id="input-userName"
+           name="userName"
+           nbInput
+           placeholder="账号">
+    <ng-container *ngIf="userName.invalid && userName.touched">
+      <p *ngIf="userName.errors?.required" class="caption status-danger">
+        请输入登录账号!
+      </p>
+    </ng-container>
+  </div>
+
+  <div class="form-control-group">
+    <span class="label-with-link">
+      <label class="label" for="input-password">密码:</label>
+      <a class="forgot-password caption-2" routerLink="../request-password">忘记密码?</a>
+    </span>
+    <input #password="ngModel" [(ngModel)]="user.password"
+           [attr.aria-invalid]="password.invalid && password.touched ? true : null"
+           [required]="getConfigValue('forms.validation.password.required')"
+           [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : ''" fieldSize="large"
+           fullWidth id="input-password" name="password"
+           nbInput
+           placeholder="密码"
+           type="password">
+    <ng-container *ngIf="password.invalid && password.touched ">
+      <p *ngIf="password.errors?.required" class="caption status-danger">
+        请输入登录密码!
+      </p>
+    </ng-container>
+  </div>
+
+  <div class="form-control-group accept-group">
+    <nb-checkbox *ngIf="rememberMe" [(ngModel)]="user.rememberMe" name="rememberMe">记住我</nb-checkbox>
+  </div>
+
+  <button [class.btn-pulse]="submitted" [disabled]="submitted || !form.valid" fullWidth nbButton size="large"
+          status="primary">
+    登录
+  </button>
+</form>
+<section aria-label="Register" class="another-action">
+  我还没有账号? <a class="text-link" routerLink="../register">注册</a>
+</section>
