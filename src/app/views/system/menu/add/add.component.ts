@@ -27,13 +27,13 @@ export class MenuAddComponent implements OnInit {
   constructor(
     private ref: NbDialogRef<MenuAddComponent>,
     private menuService: MenuService,
-    private toastrService: NbToastrService
+    private toastrService: NbToastrService,
   ) {}
 
   ngOnInit() {}
 
   cancel() {
-    this.ref.close(this.menu);
+    this.ref.close();
   }
 
   submit() {
