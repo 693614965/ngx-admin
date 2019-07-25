@@ -1,10 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {
-  NbMediaBreakpointsService,
-  NbMenuService,
-  NbSidebarService,
-  NbThemeService,
-} from '@nebular/theme';
+import {NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService,} from '@nebular/theme';
 import {Router} from '@angular/router';
 import {UserData} from '../../../@core/data/users';
 import {LayoutService} from '../../../@core/utils';
@@ -40,7 +35,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     },
   ];
 
-  currentTheme = 'cosmic';
+  currentTheme: string = 'cosmic';
 
   userMenu = [{title: '个人中心'}, {title: '修改密码'}, {title: '退出'}];
 
@@ -55,8 +50,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.currentTheme = this.themeService.currentTheme;
-
+    // this.currentTheme = this.themeService.currentTheme;
+    this.themeService.changeTheme(this.currentTheme);
+    console.info(this.currentTheme);
     this.userService
       .getUsers()
       .pipe(takeUntil(this.destroy$))
@@ -108,6 +104,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   changeTheme(themeName: string) {
+    console.info(themeName);
     this.themeService.changeTheme(themeName);
   }
 

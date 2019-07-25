@@ -5,31 +5,21 @@
       <div class="form-group row">
         <label class="col-sm-3 label" for="type">分类</label>
         <div class="col-sm-9">
-          <el-radio-group [(ngModel)]="menu.type" id="type" name="type" placeholder="分类">
-            <el-radio [label]="10">菜单</el-radio>
-            <el-radio [label]="20">功能</el-radio>
-          </el-radio-group>
+          <nz-radio-group [(ngModel)]="menu.type" id="type" name="type" placeholder="分类">
+            <label [nzValue]="10" nz-radio>菜单</label>
+            <label [nzValue]="20" nz-radio>功能</label>
+          </nz-radio-group>
         </div>
       </div>
       <div class="form-group row">
         <label class="label col-sm-3 col-form-label" for="pid">上级菜单</label>
         <div class="col-sm-9">
-<!--          <el-cascader-->
-<!--            [options]="menus"-->
-<!--            [change-on-select]="true"-->
-<!--            [clearable]="true"-->
-<!--            [model]="selectedValue"-->
-<!--            (modelChange)="changeHandle($event)"-->
-<!--            id="pid"-->
-<!--            name="pid"-->
-<!--            style="background-color: black;"-->
-<!--            placeholder="上级菜单">-->
-<!--          </el-cascader>-->
           <nz-cascader
             [nzOptions]="menus"
             [(ngModel)]="selectedValue"
             (ngModelChange)="changeHandle($event)"
             [nzSize]="'large'"
+            placeholder="选择菜单"
             nzChangeOnSelect
             id="pid"
             name="pid">
@@ -40,28 +30,28 @@
         <label class="label col-sm-3 col-form-label" for="name">名称</label>
         <div class="col-sm-9">
           <input #name="ngModel" [(ngModel)]="menu.name" fullWidth id="name" name="name" nbInput placeholder="名称"
-            type="text">
+                 type="text">
         </div>
       </div>
       <div class="form-group row">
         <label class="label col-sm-3 col-form-label" for="path">路由</label>
         <div class="col-sm-9">
           <input #path="ngModel" [(ngModel)]="menu.path" fullWidth id="path" name="path" nbInput placeholder="路由"
-            type="text">
+                 type="text">
         </div>
       </div>
       <div class="form-group row">
         <label class="label col-sm-3 col-form-label" for="icon">图标</label>
         <div class="col-sm-9">
           <input #icon="ngModel" [(ngModel)]="menu.icon" fullWidth id="icon" name="icon" nbInput placeholder="图标"
-            type="text">
+                 type="text">
         </div>
       </div>
       <div class="form-group row">
         <label class="label col-sm-3 col-form-label" for="sort">序号</label>
         <div class="col-sm-9">
           <input #sort="ngModel" [(ngModel)]="menu.sort" fullWidth id="sort" name="sort" nbInput placeholder="序号"
-            type="number">
+                 type="number">
         </div>
       </div>
     </form>

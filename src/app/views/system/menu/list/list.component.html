@@ -17,8 +17,8 @@
       <ng-container [nbTreeGridColumnDef]="customColumn">
         <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>名称</th>
         <td nbTreeGridCell *nbTreeGridCellDef="let row">
-          <nb-tree-grid-row-toggle [expanded]="row.expanded"
-                                   *ngIf="row.data.children && row.data.children.length !== 0 ">
+          <nb-tree-grid-row-toggle *ngIf="row.data.children && row.data.children.length !== 0 "
+                                   [expanded]="row.expanded">
           </nb-tree-grid-row-toggle>
           {{row.data[customColumn]}}
         </td>
@@ -27,7 +27,8 @@
 
       <ng-container nbTreeGridColumnDef="type">
         <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>分类</th>
-        <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.type || '-'}}</td>
+        <td *nbTreeGridCellDef="let row" nbTreeGridCell>{{row.data.type === 10 ? '菜单' : '功能'}}
+        </td>
       </ng-container>
 
       <ng-container nbTreeGridColumnDef="path">
