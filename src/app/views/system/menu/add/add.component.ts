@@ -52,9 +52,9 @@ export class MenuAddComponent implements OnInit {
             children.children.map(child => {
               child.label = child.name;
               child.value = child.id;
-            })
+            });
           }
-        })
+        });
       }
     });
   }
