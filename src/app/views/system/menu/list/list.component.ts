@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NbDialogService, NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder,} from '@nebular/theme';
+import {NbDialogService, NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder} from '@nebular/theme';
 import {MenuService} from '../../../../service/menu.service';
 import {MenuAddComponent} from '../add/add.component';
 
