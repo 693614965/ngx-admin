@@ -10,12 +10,15 @@ import {MenuAddComponent} from '../add/add.component';
 
 export interface FSEntry {
   id?: string;
+  type?: number;
   name?: string;
   path?: string;
   icon?: string;
   sort?: number;
   locale?: string;
   pid?: string;
+  label?: string;
+  value?: string;
   children?: FSEntry[];
   expanded?: boolean;
 }
@@ -26,7 +29,7 @@ export interface FSEntry {
 })
 export class MenuListComponent implements OnInit {
   customColumn = 'name';
-  defaultColumns = ['path', 'icon', 'sort', 'actions'];
+  defaultColumns = ['type', 'path', 'code', 'icon', 'sort', 'actions'];
   allColumns = [this.customColumn, ...this.defaultColumns];
   data: FSEntry[] = [];
   source: NbTreeGridDataSource<FSEntry>;

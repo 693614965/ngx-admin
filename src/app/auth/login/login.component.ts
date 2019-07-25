@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
       } else {
         this.showMessages = {};
         this.tokenService.set(
-          new NbAuthSimpleToken(resp.data, 'token', new Date()),
+          new NbAuthSimpleToken(resp.data.token, 'token', new Date()),
         );
         setTimeout(() => {
           this.router.navigateByUrl('/');

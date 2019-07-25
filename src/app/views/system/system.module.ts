@@ -7,9 +7,11 @@ import {
   NbDialogModule,
   NbIconModule,
   NbSelectModule,
+  NbRadioModule,
   NbTreeGridModule,
   NbInputModule,
 } from '@nebular/theme';
+import { NgZorroAntdModule, NZ_I18N, zh_CN } from 'ng-zorro-antd';
 import {Ng2SmartTableModule} from 'ng2-smart-table';
 import {ThemeModule} from '../../@theme/theme.module';
 
@@ -36,9 +38,11 @@ import {RenderNameComponent} from './permission/render/render.component';
     ReactiveFormsModule,
     NbButtonModule,
     NbCardModule,
+    NgZorroAntdModule,
     NbDialogModule.forChild(),
     NbIconModule,
     NbSelectModule,
+    NbRadioModule,
     NbInputModule,
     ThemeModule,
     NbTreeGridModule,

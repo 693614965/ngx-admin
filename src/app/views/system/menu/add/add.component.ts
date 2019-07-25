@@ -8,6 +8,7 @@ import {
 } from '@nebular/theme';
 import {MenuService} from '../../../../service/menu.service';
 import {FSEntry} from '../list/list.component';
+
 @Component({
   selector: 'ngx-add',
   templateUrl: './add.component.html',
@@ -16,6 +17,7 @@ import {FSEntry} from '../list/list.component';
 export class MenuAddComponent implements OnInit {
   @Input() menus: FSEntry[] = [];
   @Input() menu: FSEntry = {};
+  selectedValue: string[] = [];
   destroyByClick = true;
   duration = 2000;
   hasIcon = true;
@@ -28,9 +30,39 @@ export class MenuAddComponent implements OnInit {
     private ref: NbDialogRef<MenuAddComponent>,
     private menuService: MenuService,
     private toastrService: NbToastrService,
-  ) {}
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.menus.map(menu => {
+      menu.label = menu.name;
+      menu.value = menu.id;
+      if (menu.id === this.menu.pid) {
+        this.selectedValue.push(menu.id);
+      }
+      if (menu.children) {
+        menu.children.map(children => {
+          children.label = children.name;
+          children.value = children.id;
+          if (children.id === this.menu.pid) {
+            this.selectedValue.push(menu.id);
+            this.selectedValue.push(children.id);
+          }
+          if (children.children) {
+            children.children.map(child => {
+              child.label = child.name;
+              child.value = child.id;
+            })
+          }
+        })
+      }
+    });
+  }
+
+  changeHandle = (event) => {
+    console.info(event);
+    this.selectedValue = event;
+  }
 
   cancel() {
     this.ref.close();
@@ -46,6 +78,9 @@ export class MenuAddComponent implements OnInit {
   }
 
   private update() {
+    if (this.selectedValue && this.selectedValue.length !== 0) {
+      this.menu.pid = this.selectedValue[this.selectedValue.length - 1];
+    }
     this.menuService.update(this.menu).subscribe(resp => {
       console.info(resp);
       if (resp.code === 1) {
@@ -59,6 +94,9 @@ export class MenuAddComponent implements OnInit {
   }
 
   private save() {
+    if (this.selectedValue && this.selectedValue.length !== 0) {
+      this.menu.pid = this.selectedValue[this.selectedValue.length - 1];
+    }
     this.menuService.add(this.menu).subscribe(resp => {
       console.info(resp);
       if (resp.code === 1) {
