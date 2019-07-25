@@ -1,15 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  NbGetters,
-  NbDialogService,
-  NbTreeGridDataSource,
-  NbTreeGridDataSourceBuilder,
-} from '@nebular/theme';
+import {NbDialogService, NbGetters, NbTreeGridDataSource, NbTreeGridDataSourceBuilder,} from '@nebular/theme';
 import {MenuService} from '../../../../service/menu.service';
 import {MenuAddComponent} from '../add/add.component';
 
 export interface FSEntry {
   id?: string;
+  code?: string;
   type?: number;
   name?: string;
   path?: string;

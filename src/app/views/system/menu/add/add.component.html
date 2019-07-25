@@ -48,6 +48,13 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="label col-sm-3 col-form-label" for="code">授权码</label>
+        <div class="col-sm-9">
+          <input #icon="ngModel" [(ngModel)]="menu.code" fullWidth id="code" name="code" nbInput placeholder="请输入"
+                 type="text">
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="label col-sm-3 col-form-label" for="sort">序号</label>
         <div class="col-sm-9">
           <input #sort="ngModel" [(ngModel)]="menu.sort" fullWidth id="sort" name="sort" nbInput placeholder="序号"
