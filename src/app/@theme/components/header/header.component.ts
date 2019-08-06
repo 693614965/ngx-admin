@@ -35,7 +35,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     },
   ];
 
-  currentTheme: string = 'cosmic';
+  currentTheme: string = 'default';
 
   userMenu = [{title: '个人中心'}, {title: '修改密码'}, {title: '退出'}];
 

@@ -23,28 +23,28 @@ export class RequestService {
       .get(url, {params: query, headers: this.headers})
       .pipe(
         map(this.handleSuccess),
-        catchError(res => this.handleError)
+        catchError(res => this.handleError),
       );
   }
 
   public post(url: string, data: any): any {
     return this.httpClient.post(url, data, {headers: this.headers}).pipe(
       map(this.handleSuccess),
-      catchError(res => this.handleError)
+      catchError(res => this.handleError),
     );
   }
 
   public put(url: string, data: any): any {
     return this.httpClient.put(url, data, {headers: this.headers}).pipe(
       map(this.handleSuccess),
-      catchError(res => this.handleError)
+      catchError(res => this.handleError),
     );
   }
 
   public delete(url: string): any {
     return this.httpClient.delete(url, {headers: this.headers}).pipe(
       map(this.handleSuccess),
-      catchError(res => this.handleError)
+      catchError(res => this.handleError),
     );
   }
 

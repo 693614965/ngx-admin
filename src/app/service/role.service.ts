@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {RequestService, ResponseBean} from './request.service';
 import {Observable} from 'rxjs';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,7 +15,7 @@ export class RoleService {
   }
 
   add(data: any): Observable<ResponseBean> {
-    return this.request.post(`/api/v1/role/add`, data);
+    return this.request.post(`/api/v1/role/save`, data);
   }
 
   update(data: any): Observable<ResponseBean> {

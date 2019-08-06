@@ -1,19 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../../../service/user.service';
-import {LocalDataSource} from 'ng2-smart-table';
-import {
-  NbComponentStatus,
-  NbDialogService,
-  NbGlobalPhysicalPosition,
-  NbGlobalPosition,
-  NbToastrService,
-} from '@nebular/theme';
-import {
-  RenderStatusComponent,
-  RenderSuperAdminComponent,
-} from '../render/render.component';
+import {RoleService} from '../../../../service/role.service';
+import {NzModalService, NzNotificationService} from 'ng-zorro-antd';
+
+import {NbDialogService} from '@nebular/theme';
 
 import {UserAddComponent} from '../add/add.component';
+import {UserEditComponent} from '../edit/edit.component';
 
 @Component({
   selector: 'ngx-list',
@@ -21,157 +14,76 @@ import {UserAddComponent} from '../add/add.component';
   styleUrls: ['./list.component.scss'],
 })
 export class UserListComponent implements OnInit {
-  settings = {
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-      confirmCreate: true,
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-      confirmSave: true,
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
-    actions: {
-      columnTitle: '操作',
-      position: 'right',
-    },
-    hideSubHeader: true,
-    columns: {
-      userName: {
-        title: '账号',
-        editable: false,
-      },
-      email: {
-        title: '邮箱',
-      },
-      mobile: {
-        title: '手机',
-      },
-      status: {
-        title: '使用状态',
-        type: 'custom',
-        renderComponent: RenderStatusComponent,
-        editor: {
-          type: 'list',
-          config: {
-            list: [{value: 0, title: '正常'}, {value: 1, title: '禁用'}],
-          },
-        },
-      },
-      lastLogin: {
-        title: '登录日期',
-        editable: false,
-      },
-      isSuperAdmin: {
-        title: '超级管理员',
-        type: 'custom',
-        renderComponent: RenderSuperAdminComponent,
-        editor: {
-          type: 'list',
-          config: {
-            list: [{value: true, title: '是'}, {value: false, title: '否'}],
-          },
-        },
-      },
-      addOn: {
-        title: '创建日期',
-        editable: false,
-      },
-    },
-  };
-  source: LocalDataSource = new LocalDataSource();
-  destroyByClick = true;
-  duration = 2000;
-  hasIcon = true;
-  position: NbGlobalPosition = NbGlobalPhysicalPosition.TOP_RIGHT;
-  preventDuplicates = false;
-  status: NbComponentStatus = 'warning';
   title = '提示!';
+  listOfData = [];
+  roles = [];
+
   constructor(
     private userService: UserService,
-    private toastrService: NbToastrService,
-    private dialogService: NbDialogService
-  ) {}
+    private roleService: RoleService,
+    private notification: NzNotificationService,
+    private modalService: NzModalService,
+    private dialogService: NbDialogService,
+  ) {
+  }
 
   ngOnInit() {
     this.fetch();
+    this.fetchRoles();
   }
 
   fetch() {
     this.userService.users({}).subscribe(resp => {
       console.info(resp);
-      this.source.load(resp.data.records);
+      this.listOfData = resp.data.content;
+    });
+  }
+
+  fetchRoles = () => {
+    this.roleService.roles({}).subscribe(resp => {
+      console.info(resp);
+      this.roles = resp.data.content;
     });
   }
 
   onAddClick() {
     this.dialogService
-      .open(UserAddComponent, {})
+      .open(UserAddComponent, {
+        context: {
+          roles: this.roles,
+        },
+      })
       .onClose.subscribe(user => user && this.fetch());
   }
 
-  onCreateConfirm(event) {
-    this.userService.save(event.newData).subscribe(resp => {
-      if (resp.code === 1) {
-        this.showToast(this.status, this.title, resp.msg);
-      } else {
-        this.status = 'success';
-        this.showToast(this.status, this.title, resp.msg);
-        this.fetch();
-        event.source.refresh();
-      }
+  onEditClick(row) {
+    this.dialogService
+      .open(UserEditComponent, {
+        context: {
+          roles: this.roles,
+          user: row,
+        },
+      })
+      .onClose.subscribe(user => user && this.fetch());
+  }
+
+  onRemoveClick(row) {
+    this.modalService.confirm({
+      nzTitle: '提示',
+      nzContent: '你确定要删除此记录吗？',
+      nzOkText: '删除',
+      nzCancelText: '取消',
+      nzOnOk: () => {
+        this.userService.deleteById(row.id).subscribe(resp => {
+          console.info(resp);
+          if (resp.code === 1) {
+            this.notification.create('error', this.title, resp.msg);
+          } else {
+            this.notification.create('success', this.title, resp.msg);
+            this.fetch();
+          }
+        });
+      },
     });
-  }
-
-  onEditConfirm(event) {
-    this.userService.update(event.newData).subscribe(resp => {
-      if (resp.code === 1) {
-        this.showToast(this.status, this.title, resp.msg);
-      } else {
-        this.status = 'success';
-        this.showToast(this.status, this.title, resp.msg);
-        this.fetch();
-        event.source.refresh();
-      }
-    });
-  }
-
-  onDeleteConfirm(event) {
-    if (window.confirm('你确定要删除此账号吗?')) {
-      console.info(event.data);
-      this.userService.deleteById(event.data.id).subscribe(resp => {
-        if (resp.code === 1) {
-          this.showToast(this.status, this.title, resp.msg);
-        } else {
-          this.status = 'success';
-          this.showToast(this.status, this.title, resp.msg);
-          event.confirm.resolve();
-          event.source.refresh();
-        }
-      });
-    } else {
-      event.confirm.reject();
-    }
-  }
-
-  private showToast(type: NbComponentStatus, title: string, body: string) {
-    const config = {
-      status: type,
-      destroyByClick: this.destroyByClick,
-      duration: this.duration,
-      hasIcon: this.hasIcon,
-      position: this.position,
-      preventDuplicates: this.preventDuplicates,
-    };
-    const titleContent = title ? `. ${title}` : '';
-
-    this.toastrService.show(body, titleContent, config);
   }
 }

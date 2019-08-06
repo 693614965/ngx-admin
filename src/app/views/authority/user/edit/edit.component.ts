@@ -1,22 +1,22 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NzNotificationService} from 'ng-zorro-antd';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {NbDialogRef} from '@nebular/theme';
 import {UserService} from '../../../../service/user.service';
 
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-
 @Component({
-  selector: 'ngx-add',
-  templateUrl: './add.component.html',
-  styleUrls: ['./add.component.scss'],
+  selector: 'ngx-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.scss'],
 })
-export class UserAddComponent implements OnInit {
+export class UserEditComponent implements OnInit {
+  @Input() user: any = {};
+  @Input() roles: any[] = [];
   title = '提示!';
   validateForm: FormGroup;
-  @Input() roles: any[] = [];
 
   constructor(
-    private ref: NbDialogRef<UserAddComponent>,
+    private ref: NbDialogRef<UserEditComponent>,
     private userService: UserService,
     private notification: NzNotificationService,
     private fb: FormBuilder,
@@ -25,14 +25,13 @@ export class UserAddComponent implements OnInit {
 
   ngOnInit() {
     this.validateForm = this.fb.group({
-      username: [null, [Validators.required]],
-      password: [null, [Validators.required]],
-      checkPassword: [null, [Validators.required, this.confirmationValidator]],
-      email: [null, [Validators.email]],
+      id: [this.user.id],
+      email: [this.user.email, [Validators.email]],
       phoneNumberPrefix: ['+86'],
-      mobile: [null],
-      roles: [null],
-      profile: [null],
+      mobile: [this.user.mobile],
+      roles: [this.user.roles.map(role => role.id)],
+      status: [this.user.status],
+      profile: [this.user.profile],
     });
   }
 
@@ -71,7 +70,7 @@ export class UserAddComponent implements OnInit {
         });
         this.validateForm.value.roles = roles;
       }
-      this.userService.save(this.validateForm.value).subscribe(resp => {
+      this.userService.update(this.validateForm.value).subscribe(resp => {
         console.info(resp);
         if (resp.code === 1) {
           this.notification.create('error', this.title, resp.msg);

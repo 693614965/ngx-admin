@@ -11,9 +11,45 @@
   </nb-card-header>
 
   <nb-card-body>
-    <ng2-smart-table (createConfirm)="onCreateConfirm($event)" (deleteConfirm)="onDeleteConfirm($event)"
-      (editConfirm)="onEditConfirm($event)" [settings]="settings" [source]="source">
-    </ng2-smart-table>
+    <nz-table #basicTable #borderedTable [nzData]="listOfData" nzBordered>
+      <thead>
+      <tr>
+        <th>账号</th>
+        <th>邮箱</th>
+        <th>手机</th>
+        <th>角色</th>
+        <th>使用状态</th>
+        <th>登录日期</th>
+        <th>创建日期</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{ data.username }}</td>
+        <td>{{ data.email }}</td>
+        <td>{{ data.mobile }}</td>
+        <td>
+          <nz-tag *ngFor="let role of data.roles" [nzColor]="'blue'">{{role.name}}</nz-tag>
+        </td>
+        <td>
+          <span *ngIf="data.status === 0 " style="color:blue">启用</span>
+          <span *ngIf="data.status === 1 " style="color:red">禁用</span>
+        </td>
+        <td>{{ data.lastLogin }}</td>
+        <td>{{ data.addOn }}</td>
+        <td>
+          <button (click)="onEditClick(data)" nbButton size='small' status='primary'>
+            编辑
+          </button>
+          <nz-divider nzType="vertical"></nz-divider>
+          <button (click)="onRemoveClick(data)" nbButton size='small' status='danger'>
+            删除
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
 
   </nb-card-body>
 </nb-card>

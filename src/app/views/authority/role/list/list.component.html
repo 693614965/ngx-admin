@@ -11,9 +11,32 @@
   </nb-card-header>
 
   <nb-card-body>
-    <ng2-smart-table (createConfirm)="onCreateConfirm($event)" (deleteConfirm)="onDeleteConfirm($event)"
-      (editConfirm)="onEditConfirm($event)" [settings]="settings" [source]="source">
-    </ng2-smart-table>
+    <nz-table #basicTable #borderedTable [nzData]="listOfData" nzBordered>
+      <thead>
+      <tr>
+        <th>名称</th>
+        <th>编码</th>
+        <th>描述</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{ data.name }}</td>
+        <td>{{ data.code }}</td>
+        <td>{{ data.descr }}</td>
+        <td>
+          <button (click)="onEditClick(data)" nbButton size='small' status='primary'>
+            编辑
+          </button>
+          <nz-divider nzType="vertical"></nz-divider>
+          <button (click)="onRemoveClick(data)" nbButton size='small' status='danger'>
+            删除
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
 
   </nb-card-body>
 </nb-card>
