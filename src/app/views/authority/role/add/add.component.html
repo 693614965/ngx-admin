@@ -1,41 +1,32 @@
 <nb-card style="width:550px">
-  <nb-card-header>新增角色</nb-card-header>
+  <nb-card-header>编辑角色</nb-card-header>
   <nb-card-body>
-    <form #form="ngForm" aria-labelledby="title">
-      <div class="form-group row">
-        <label class="label col-sm-3 col-form-label" for="roleName">角色名称</label>
-        <div class="col-sm-9">
-          <input #roleName="ngModel" [(ngModel)]="role.roleName" fullWidth id="roleName" name="roleName" nbInput
-            placeholder="角色名称" [attr.aria-invalid]="roleName.invalid && roleName.touched ? true : null"
-            [required]="true" [status]="roleName.dirty ? (roleName.invalid  ? 'danger' : 'success') : ''" autofocus>
-          <ng-container *ngIf="roleName.invalid && roleName.touched">
-            <p *ngIf="roleName.errors?.required" class="caption status-danger">
-              请输入角色名称!
-            </p>
-          </ng-container>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="label col-sm-3 col-form-label" for="roleCode">角色编码</label>
-        <div class="col-sm-9">
-          <input #roleCode="ngModel" [(ngModel)]="role.roleCode" fullWidth id="roleCode" name="roleCode" nbInput
-            placeholder="角色编码" [attr.aria-invalid]="roleCode.invalid && roleCode.touched ? true : null"
-            [required]="true" [status]="roleCode.dirty ? (roleCode.invalid  ? 'danger' : 'success') : ''" autofocus>
-          <ng-container *ngIf="roleCode.invalid && roleCode.touched">
-            <p *ngIf="roleCode.errors?.required" class="caption status-danger">
-              请输入角色编码!
-            </p>
-          </ng-container>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="label col-sm-3 col-form-label" for="descr">角色描述</label>
-        <div class="col-sm-9">
-          <textarea #descr="ngModel" [(ngModel)]="role.descr" fullWidth id="descr" name="descr" nbInput
-            placeholder="角色描述" rows="2" shape="round"></textarea>
-        </div>
-      </div>
+
+    <form [formGroup]="validateForm" nz-form>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>角色名称</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入角色名称">
+          <input formControlName="name" id="name" nz-input/>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="code" nzRequired>角色编码</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入角色编码">
+          <input formControlName="code" id="code" nz-input/>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="descr">角色描述</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入">
+          <textarea formControlName="descr" id="descr" nz-input rows="4"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
     </form>
+
   </nb-card-body>
   <nb-card-footer>
     <div style="float: right">

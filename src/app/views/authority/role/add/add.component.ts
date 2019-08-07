@@ -1,34 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  NbComponentStatus,
-  NbDialogRef,
-  NbGlobalPhysicalPosition,
-  NbGlobalPosition,
-  NbToastrService,
-} from '@nebular/theme';
+import {Component, Input, OnInit} from '@angular/core';
+import {NbDialogRef} from '@nebular/theme';
 import {RoleService} from '../../../../service/role.service';
+import {NzNotificationService} from 'ng-zorro-antd';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+
 @Component({
   selector: 'ngx-add',
   templateUrl: './add.component.html',
-  styleUrls: ['./add.component.scss']
+  styleUrls: ['./add.component.scss'],
 })
 export class RoleAddComponent implements OnInit {
-  role: any = {};
-  destroyByClick = true;
-  duration = 2000;
-  hasIcon = true;
-  position: NbGlobalPosition = NbGlobalPhysicalPosition.TOP_RIGHT;
-  preventDuplicates = false;
-  status: NbComponentStatus = 'warning';
+  @Input() role: any = {};
   title = '提示!';
+  validateForm: FormGroup;
 
   constructor(
     private ref: NbDialogRef<RoleAddComponent>,
     private roleService: RoleService,
-    private toastrService: NbToastrService) {
+    private notification: NzNotificationService,
+    private fb: FormBuilder,
+  ) {
   }
 
   ngOnInit() {
+    this.validateForm = this.fb.group({
+      id: [this.role.id],
+      name: [this.role.name, [Validators.required]],
+      code: [this.role.code, [Validators.required]],
+      descr: [this.role.descr],
+    });
   }
 
   cancel() {
@@ -36,34 +36,42 @@ export class RoleAddComponent implements OnInit {
   }
 
   submit() {
-    console.info(this.role);
-    this.roleService.add(this.role).subscribe(resp => {
+    // tslint:disable-next-line: forin
+    for (const i in this.validateForm.controls) {
+      this.validateForm.controls[i].markAsDirty();
+      this.validateForm.controls[i].updateValueAndValidity();
+    }
+    if (this.validateForm.valid) {
+      if (this.validateForm.value.id) {
+        this.update();
+      } else {
+        this.save();
+      }
+    }
+  }
+
+  save() {
+    this.roleService.add(this.validateForm.value).subscribe(resp => {
       console.info(resp);
       if (resp.code === 1) {
-        this.showToast(this.status, this.title, resp.msg);
+        this.notification.create('error', this.title, resp.msg);
       } else {
-        this.status = 'success';
-        this.showToast(this.status, this.title, resp.msg);
-        this.ref.close(this.role);
+        this.notification.create('success', this.title, resp.msg);
+        this.ref.close(this.validateForm.value);
       }
     });
   }
 
-  private showToast(type: NbComponentStatus, title: string, body: string) {
-    const config = {
-      status: type,
-      destroyByClick: this.destroyByClick,
-      duration: this.duration,
-      hasIcon: this.hasIcon,
-      position: this.position,
-      preventDuplicates: this.preventDuplicates,
-    };
-    const titleContent = title ? `. ${title}` : '';
-
-    this.toastrService.show(
-      body,
-      titleContent,
-      config);
+  update() {
+    this.roleService.update(this.validateForm.value).subscribe(resp => {
+      console.info(resp);
+      if (resp.code === 1) {
+        this.notification.create('error', this.title, resp.msg);
+      } else {
+        this.notification.create('success', this.title, resp.msg);
+        this.ref.close(this.validateForm.value);
+      }
+    });
   }
 
 }

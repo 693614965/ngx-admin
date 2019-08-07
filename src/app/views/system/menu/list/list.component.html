@@ -36,9 +36,9 @@
         <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.path || '-'}}</td>
       </ng-container>
 
-      <ng-container nbTreeGridColumnDef="code">
+      <ng-container nbTreeGridColumnDef="authCode">
         <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>授权码</th>
-        <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.code || '-'}}</td>
+        <td *nbTreeGridCellDef="let row" nbTreeGridCell>{{row.data.authCode || '-'}}</td>
       </ng-container>
 
       <ng-container nbTreeGridColumnDef="icon">
@@ -46,9 +46,9 @@
         <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.icon || '-'}}</td>
       </ng-container>
 
-      <ng-container nbTreeGridColumnDef="sort">
+      <ng-container nbTreeGridColumnDef="orderNo">
         <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>序号</th>
-        <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data.sort || '-'}}</td>
+        <td *nbTreeGridCellDef="let row" nbTreeGridCell>{{row.data.orderNo || '-'}}</td>
       </ng-container>
 
       <ng-container nbTreeGridColumnDef="actions">

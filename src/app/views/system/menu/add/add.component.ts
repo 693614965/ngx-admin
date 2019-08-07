@@ -1,13 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {
-  NbComponentStatus,
-  NbDialogRef,
-  NbGlobalPhysicalPosition,
-  NbGlobalPosition,
-  NbToastrService,
-} from '@nebular/theme';
+import {NbDialogRef} from '@nebular/theme';
 import {MenuService} from '../../../../service/menu.service';
 import {FSEntry} from '../list/list.component';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NzNotificationService} from 'ng-zorro-antd';
 
 @Component({
   selector: 'ngx-add',
@@ -17,51 +13,56 @@ import {FSEntry} from '../list/list.component';
 export class MenuAddComponent implements OnInit {
   @Input() menus: FSEntry[] = [];
   @Input() menu: FSEntry = {};
-  selectedValue: string[] = [];
-  destroyByClick = true;
-  duration = 2000;
-  hasIcon = true;
-  position: NbGlobalPosition = NbGlobalPhysicalPosition.TOP_RIGHT;
-  preventDuplicates = false;
-  status: NbComponentStatus = 'warning';
+  validateForm: FormGroup;
   title = '提示!';
 
   constructor(
     private ref: NbDialogRef<MenuAddComponent>,
     private menuService: MenuService,
-    private toastrService: NbToastrService,
+    private fb: FormBuilder,
+    private notification: NzNotificationService,
   ) {
   }
 
   ngOnInit() {
-    this.menus.map(menu => {
-      menu.label = menu.name;
-      menu.value = menu.id;
-      if (menu.id === this.menu.pid) {
-        this.selectedValue.push(menu.id);
-      }
-      if (menu.children) {
-        menu.children.map(children => {
-          children.label = children.name;
-          children.value = children.id;
-          if (children.id === this.menu.pid) {
-            this.selectedValue.push(menu.id);
-            this.selectedValue.push(children.id);
-          }
-          if (children.children) {
-            children.children.map(child => {
-              child.label = child.name;
-              child.value = child.id;
-            });
-          }
-        });
-      }
+    this.validateForm = this.fb.group({
+      id: [this.menu.id],
+      type: [this.menu.type || 10, [Validators.required]],
+      pid: [this.getPids()],
+      name: [this.menu.name],
+      path: [this.menu.path],
+      icon: [this.menu.icon],
+      authCode: [this.menu.authCode],
+      orderNo: [this.menu.orderNo],
     });
   }
 
-  changeHandle = (event) => {
-    console.info(event);
-    this.selectedValue = event;
+  getPids() {
+    const pids: string[] = [];
+    if (this.menu.id) {
+      this.getParent(this.menus, this.menu.id, pids);
+    }
+    return pids.reverse();
+  }
+
+  getParent(menus: FSEntry[], id: string, pids: string[]) {
+    menus.forEach(menu => {
+      if (menu.id === id) {
+        if (menu.parent) {
+          if (typeof (menu.parent) === 'string') {
+            pids.push(menu.parent);
+            this.getParent(this.menus, menu.parent, pids);
+          } else if (typeof (menu.parent) === 'object') {
+            pids.push(menu.parent.id);
+            this.getParent(this.menus, menu.parent.id, pids);
+          }
+        }
+      } else {
+        if (menu.children) {
+          this.getParent(menu.children, id, pids);
+        }
+      }
+    });
   }
 
   cancel() {
@@ -69,57 +70,46 @@ export class MenuAddComponent implements OnInit {
   }
 
   submit() {
-    console.info(this.menu);
     if (!this.menu.id) {
       this.save();
+      console.info(this.validateForm.value);
     } else {
       this.update();
+      console.info(this.validateForm.value);
     }
   }
 
-  private update() {
-    if (this.selectedValue && this.selectedValue.length !== 0) {
-      this.menu.pid = this.selectedValue[this.selectedValue.length - 1];
+  update() {
+    if (this.validateForm.value.pid && this.validateForm.value.pid.length !== 0) {
+      this.validateForm.value.parent = {
+        id: this.validateForm.value.pid[this.validateForm.value.pid.length - 1],
+      };
     }
-    this.menuService.update(this.menu).subscribe(resp => {
+    this.menuService.update(this.validateForm.value).subscribe(resp => {
       console.info(resp);
       if (resp.code === 1) {
-        this.showToast(this.status, this.title, resp.msg);
+        this.notification.create('error', this.title, resp.msg);
       } else {
-        this.status = 'success';
-        this.showToast(this.status, this.title, resp.msg);
-        this.ref.close(this.menu);
+        this.notification.create('success', this.title, resp.msg);
+        this.ref.close(this.validateForm.value);
       }
     });
   }
 
-  private save() {
-    if (this.selectedValue && this.selectedValue.length !== 0) {
-      this.menu.pid = this.selectedValue[this.selectedValue.length - 1];
+  save() {
+    if (this.validateForm.value.pid && this.validateForm.value.pid.length !== 0) {
+      this.validateForm.value.parent = {
+        id: this.validateForm.value.pid[this.validateForm.value.pid.length - 1],
+      };
     }
-    this.menuService.add(this.menu).subscribe(resp => {
+    this.menuService.add(this.validateForm.value).subscribe(resp => {
       console.info(resp);
       if (resp.code === 1) {
-        this.showToast(this.status, this.title, resp.msg);
+        this.notification.create('error', this.title, resp.msg);
       } else {
-        this.status = 'success';
-        this.showToast(this.status, this.title, resp.msg);
-        this.ref.close(this.menu);
+        this.notification.create('success', this.title, resp.msg);
+        this.ref.close(this.validateForm.value);
       }
     });
-  }
-
-  private showToast(type: NbComponentStatus, title: string, body: string) {
-    const config = {
-      status: type,
-      destroyByClick: this.destroyByClick,
-      duration: this.duration,
-      hasIcon: this.hasIcon,
-      position: this.position,
-      preventDuplicates: this.preventDuplicates,
-    };
-    const titleContent = title ? `. ${title}` : '';
-
-    this.toastrService.show(body, titleContent, config);
   }
 }

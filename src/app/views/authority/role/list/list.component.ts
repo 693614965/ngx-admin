@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NbDialogService,} from '@nebular/theme';
+import {NbDialogService} from '@nebular/theme';
 import {RoleService} from '../../../../service/role.service';
 import {RoleAddComponent} from '../add/add.component';
 
@@ -11,10 +11,12 @@ import {RoleAddComponent} from '../add/add.component';
 export class RoleListComponent implements OnInit {
   title = '提示!';
   listOfData = [];
+
   constructor(
     private dialogService: NbDialogService,
     private roleService: RoleService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.fetch();
@@ -29,47 +31,26 @@ export class RoleListComponent implements OnInit {
 
   onAddClick() {
     this.dialogService
-      .open(RoleAddComponent, {})
+      .open(RoleAddComponent, {
+        context: {
+          role: {},
+        },
+      })
       .onClose.subscribe(role => role && this.fetch());
   }
 
-  onCreateConfirm(event) {
-    this.roleService.add(event.newData).subscribe(resp => {
-      if (resp.code === 1) {
-        // this.showToast(this.status, this.title, resp.msg);
-      } else {
-        // this.status = 'success';
-        // this.showToast(this.status, this.title, resp.msg);
-        this.fetch();
-        event.source.refresh();
-      }
-    });
+  onEditClick(row) {
+    this.dialogService
+      .open(RoleAddComponent, {
+        context: {
+          role: row,
+        },
+      })
+      .onClose.subscribe(role => role && this.fetch());
   }
 
-  onEditConfirm(event) {
-    this.roleService.update(event.newData).subscribe(resp => {
-      if (resp.code === 1) {
-        // this.showToast(this.status, this.title, resp.msg);
-      } else {
-        this.fetch();
-        event.source.refresh();
-      }
-    });
+  onRemoveClick() {
+
   }
 
-  onDeleteConfirm(event) {
-    if (window.confirm('你确定要删除此账号吗?')) {
-      console.info(event.data);
-      this.roleService.deleteById(event.data.id).subscribe(resp => {
-        if (resp.code === 1) {
-          // this.showToast(this.status, this.title, resp.msg);
-        } else {
-          event.confirm.resolve();
-          event.source.refresh();
-        }
-      });
-    } else {
-      event.confirm.reject();
-    }
-  }
 }

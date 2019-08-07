@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {RequestService, ResponseBean} from './request.service';
 import {Observable} from 'rxjs';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -8,12 +9,12 @@ export class MenuService {
 
   constructor(private request: RequestService) { }
 
-  all(params: any): Observable<ResponseBean> {
-    return this.request.get(`/api/v1/menu/all`, params);
+  list(params: any): Observable<ResponseBean> {
+    return this.request.get(`/api/v1/menu/list`, params);
   }
 
   add(data: any): Observable<ResponseBean> {
-    return this.request.post(`/api/v1/menu/add`, data);
+    return this.request.post(`/api/v1/menu/save`, data);
   }
 
   update(data: any): Observable<ResponseBean> {

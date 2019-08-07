@@ -5,19 +5,17 @@ import {MenuAddComponent} from '../add/add.component';
 
 export interface FSEntry {
   id?: string;
-  code?: string;
   type?: number;
+  authCode?: string;
   name?: string;
   path?: string;
   icon?: string;
-  sort?: number;
-  locale?: string;
-  pid?: string;
-  label?: string;
-  value?: string;
+  orderNo?: number;
+  parent?: FSEntry | string;
   children?: FSEntry[];
   expanded?: boolean;
 }
+
 @Component({
   selector: 'ngx-list',
   templateUrl: './list.component.html',
@@ -25,7 +23,7 @@ export interface FSEntry {
 })
 export class MenuListComponent implements OnInit {
   customColumn = 'name';
-  defaultColumns = ['type', 'path', 'code', 'icon', 'sort', 'actions'];
+  defaultColumns = ['type', 'path', 'authCode', 'icon', 'orderNo', 'actions'];
   allColumns = [this.customColumn, ...this.defaultColumns];
   data: FSEntry[] = [];
   source: NbTreeGridDataSource<FSEntry>;
@@ -39,13 +37,15 @@ export class MenuListComponent implements OnInit {
     private menuService: MenuService,
     private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
     private dialogService: NbDialogService,
-  ) {}
+  ) {
+  }
+
   ngOnInit() {
     this.fetch();
   }
 
   fetch() {
-    this.menuService.all({}).subscribe(resp => {
+    this.menuService.list({}).subscribe(resp => {
       console.info(resp);
       this.data = resp.data;
       this.source = this.dataSourceBuilder.create(this.data, this.getters);
@@ -64,7 +64,6 @@ export class MenuListComponent implements OnInit {
   }
 
   onEditClick(menu: FSEntry) {
-    console.info(menu);
     this.dialogService
       .open(MenuAddComponent, {
         context: {
